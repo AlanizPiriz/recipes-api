@@ -56,4 +56,16 @@ const remove = async (req, res) => {
   }
 }
 
-module.exports = { getAll, getById, create, update, remove }
+// GET /api/recipes/random
+const getRandom = async (req, res) => {
+  try {
+    const count = await Recipe.countDocuments()
+    const random = Math.floor(Math.random() * count)
+    const recipe = await Recipe.findOne().skip(random)
+    res.json(recipe)
+  } catch (err) {
+    res.status(500).json({error: 'Error al tener receta aleatora' })
+  }                                                                                                                                                                                                                                                                                                                                                                                 
+}
+
+module.exports = { getAll, getById, create, update, remove, getRandom }
