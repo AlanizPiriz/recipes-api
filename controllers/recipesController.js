@@ -4,7 +4,17 @@ const Recipe = require('../models/Recipe')
 const getAll = async (req, res) => {
   try {
     const { q } = req.query
-    const filter = q ? { name: { $regex: q, $options: 'i' } } : {}
+    let filter = {}
+
+    if (q) {
+      const terminos = q.split(',').map(t => t.trim())
+      filter = {
+        $and: terminos.map(t => ({
+          ingredients: { $regex: t, $options: 'i' }
+        }))
+      }
+    }
+
     const recipes = await Recipe.find(filter)
     res.json(recipes)
   } catch (err) {
