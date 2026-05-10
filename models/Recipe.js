@@ -4,8 +4,9 @@ const recipeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   ingredients: { type: [String], required: true },
   category: { type: String, required: true },
-  image: { type: String, default: ''},
-  instruction: { type: String, default: ''}
+  image: { type: String, default: '' },
+  instruction: { type: String, default: '' },
+  tags: { type: [String], default: [] }
 })
 
 module.exports = mongoose.model('Recipe', recipeSchema)

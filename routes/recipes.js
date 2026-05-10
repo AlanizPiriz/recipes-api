@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const { getAll, getById, create, update, remove, getRandom } = require('../controllers/recipesController')
+const { getAll, getById, create, update, remove, getRandom, bulkCreate } = require('../controllers/recipesController')
 const verificarToken = require('../middleware/auth')
 
+router.post('/bulk', verificarToken, bulkCreate)
 router.get('/',        getAll)
 router.get('/random',  getRandom)
 router.get('/:id',     getById)

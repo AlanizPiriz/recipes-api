@@ -69,13 +69,26 @@ const remove = async (req, res) => {
 // GET /api/recipes/random
 const getRandom = async (req, res) => {
   try {
-    const count = await Recipe.countDocuments()
+    const { exclude } = req.query
+    const filter = exclude ? { _id: { $ne: exclude } } : {}
+    const count = await Recipe.countDocuments(filter)
     const random = Math.floor(Math.random() * count)
-    const recipe = await Recipe.findOne().skip(random)
+    const recipe = await Recipe.findOne(filter).skip(random)
     res.json(recipe)
   } catch (err) {
-    res.status(500).json({error: 'Error al tener receta aleatora' })
-  }                                                                                                                                                                                                                                                                                                                                                                                 
+    res.status(500).json({ error: 'Error al obtener receta aleatoria' })
+  }
 }
 
-module.exports = { getAll, getById, create, update, remove, getRandom }
+
+//carga masiva
+const bulkCreate = async (req, res) => {
+  try {
+    const recipes = await Recipe.insertMany(req.body)
+    res.status(201).json({ insertadas: recipes.length, recipes })
+  } catch (err) {
+    res.status(400).json({ error: 'Error al insertar recetas' })
+  }
+}
+
+module.exports = { getAll, getById, create, update, remove, getRandom, bulkCreate }
