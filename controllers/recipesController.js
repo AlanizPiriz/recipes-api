@@ -69,9 +69,14 @@ const remove = async (req, res) => {
 // GET /api/recipes/random
 const getRandom = async (req, res) => {
   try {
-    const { exclude } = req.query
-    const filter = exclude ? { _id: { $ne: exclude } } : {}
+    const { exclude, tag } = req.query
+    const filter = {}
+    if (exclude) filter._id = { $ne: exclude }
+    if (tag) filter.tags = tag
+    
     const count = await Recipe.countDocuments(filter)
+    if (count === 0) return res.status(404).json({ error: 'No hay recetas con ese filtro' })
+    
     const random = Math.floor(Math.random() * count)
     const recipe = await Recipe.findOne(filter).skip(random)
     res.json(recipe)
