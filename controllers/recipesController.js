@@ -102,24 +102,30 @@ const bulkCreate = async (req, res) => {
 const getWeekly = async (req, res) => {
   try {
     const days = parseInt(req.query.days) || 5
-    const { tag } = req.query
+    const { tags } = req.query
 
-    const filter = tag ? { tags: tag } : {}
+    let filter = {}
+    
+    if (tags) {
+      const lista = tags.split(',')
+      filter.tags = { $all: lista }
+    } else {
+      // Si no hay tags seleccionados, excluir postres
+      filter.tags = { $nin: ['postre'] }
+    }
+
     const todas = await Recipe.find(filter)
     if (todas.length < days) return res.status(400).json({ error: 'No hay suficientes recetas con ese filtro' })
 
-    // Extraer palabra clave de cada ingrediente (última palabra significativa)
     const palabrasClave = (ingredientes) => ingredientes.map(ing => 
-      ing.toLowerCase().replace(/[0-9]/g, '').replace(/g|ml|kg|l|taza|cucharada|cucharadita|feta|diente|hoja|sobre|lata|unidad/g, '').trim().split(' ').filter(p => p.length > 2).pop() || ''
+      ing.toLowerCase().replace(/[0-9]/g, '').replace(/g|ml|kg|litros?|tazas?|cucharadas?|cucharaditas?|fetas?|dientes?|hojas?|potes?|latas?|botellas?|paquetes?|unidades?/g, '').trim().split(' ').filter(p => p.length > 2).pop() || ''
     ).filter(Boolean)
 
-    // Elegir receta base random
     const base = todas[Math.floor(Math.random() * todas.length)]
     const baseKeywords = palabrasClave(base.ingredients)
     const seleccionadas = [base]
     const restantes = todas.filter(r => r._id.toString() !== base._id.toString())
 
-    // Puntuar por ingredientes en común
     const conPuntaje = restantes.map(receta => {
       const keywords = palabrasClave(receta.ingredients)
       const comunes = keywords.filter(k => baseKeywords.includes(k)).length
