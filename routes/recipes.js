@@ -13,4 +13,23 @@ router.put('/:id',     verificarToken, update)
 router.delete('/:id',  verificarToken, remove)
 
 
+router.get('/fix-images', async (req, res) => {
+  try {
+    const recetas = await Recipe.find({});
+    
+    for (const receta of recetas) {
+      if (receta.image && receta.image.split('?').length > 2) {
+        const partes = receta.image.split('?');
+        receta.image = partes[0] + '?' + partes[1];
+        await receta.save();
+      }
+    }
+    
+    res.json({ mensaje: 'Listo!', total: recetas.length });
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+});
+
+
 module.exports = router
