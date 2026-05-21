@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const { getAll, getById, create, update, remove, getRandom, bulkCreate, getWeekly } = require('../controllers/recipesController')
 const verificarToken = require('../middleware/auth')
+const Recipe = require('../models/Recipe')
 
 router.post('/bulk', verificarToken, bulkCreate)
 router.get('/',        getAll)
@@ -28,6 +29,7 @@ router.get('/:id',     getById)
 router.post('/',       verificarToken, create)
 router.put('/:id',     verificarToken, update)
 router.delete('/:id',  verificarToken, remove)
+
 
 
 
