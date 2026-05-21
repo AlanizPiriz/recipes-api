@@ -7,12 +7,6 @@ router.post('/bulk', verificarToken, bulkCreate)
 router.get('/',        getAll)
 router.get('/random',  getRandom)
 router.get('/weekly', getWeekly)
-router.get('/:id',     getById)
-router.post('/',       verificarToken, create)
-router.put('/:id',     verificarToken, update)
-router.delete('/:id',  verificarToken, remove)
-
-
 router.get('/fix-images', async (req, res) => {
   try {
     const recetas = await Recipe.find({});
@@ -30,6 +24,13 @@ router.get('/fix-images', async (req, res) => {
     res.json({ error: error.message });
   }
 });
+router.get('/:id',     getById)
+router.post('/',       verificarToken, create)
+router.put('/:id',     verificarToken, update)
+router.delete('/:id',  verificarToken, remove)
+
+
+
 
 
 module.exports = router
