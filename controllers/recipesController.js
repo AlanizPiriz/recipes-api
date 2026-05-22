@@ -69,13 +69,19 @@ const remove = async (req, res) => {
 // GET /api/recipes/random
 const getRandom = async (req, res) => {
   try {
-    const { exclude, tags } = req.query
+    const { exclude, tags, excludeTags} = req.query
     const filter = {}
     if (exclude) filter._id = { $ne: exclude }
     if (tags) {
       const lista = tags.split(',')
       filter.tags = { $all: lista }
     }
+    if (excludeTags) {
+      const lista = excludeTags.split(',')
+      filter.tags = { ...filter.tags, $nin: lista }
+    }
+    
+
     
     const count = await Recipe.countDocuments(filter)
     if (count === 0) return res.status(404).json({ error: 'No hay recetas con ese filtro' })
