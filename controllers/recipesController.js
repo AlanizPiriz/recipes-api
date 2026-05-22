@@ -15,7 +15,7 @@ const getAll = async (req, res) => {
       }
     }
 
-    const recipes = await Recipe.find(filter)
+    const recipes = await Recipe.find(filter).collation({ locale: 'es', strength: 1 })
     res.json(recipes)
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener recetas' })
