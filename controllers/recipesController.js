@@ -71,11 +71,16 @@ const getRandom = async (req, res) => {
   try {
     const { exclude, tags, excludeTags} = req.query
     const filter = {}
+
     if (exclude) filter._id = { $ne: exclude }
+
     if (tags) {
       const lista = tags.split(',')
-      filter.tags = { $all: lista }
+      filter.tags = { $all: lista, $nin: ['postre'] }
+    }else{
+      filter.tags = { $nin: ['postre'] }
     }
+
     if (excludeTags) {
       const lista = excludeTags.split(',')
       filter.tags = { ...filter.tags, $nin: lista }
