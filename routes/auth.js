@@ -24,6 +24,7 @@ router.post('/register', async (req, res) => {
         res.json({ token, user: { id: user._id, email: user.email, plan: user.plan } })
 
     } catch (err) {
+        console.log('ERROR REGISTER:', err) // 👈 esto
         res.status(500).json({ error: 'Error al registrar' })
     }
 })
