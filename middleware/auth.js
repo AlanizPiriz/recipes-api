@@ -1,11 +1,16 @@
 const jwt = require('jsonwebtoken')
 
 const verificarToken = (req, res, next) => {
-    const token = req.headers['authorization']
+    const authHeader = req.headers['authorization']
 
-    if (!token) {
+    if (!authHeader) {
         return res.status(401).json({ error: 'Acceso denegado, token requerido' })
     }
+
+    // El header viene como "Bearer eltoken123..."
+    const token = authHeader.startsWith('Bearer ') 
+        ? authHeader.slice(7) 
+        : authHeader
 
     try {
         const verificado = jwt.verify(token, process.env.JWT_SECRET)
