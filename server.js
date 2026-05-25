@@ -4,6 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const recipesRouter = require('./routes/recipes')
 const authRouter = require('./routes/auth')
+const usersRouter = require('./routes/users')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -17,6 +18,8 @@ app.use(express.json())
 
 app.use('/api/recipes', recipesRouter)
 app.use('/api/auth', authRouter)
+
+app.use('/api/users', usersRouter)
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`)
